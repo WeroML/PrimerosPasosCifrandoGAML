@@ -1,0 +1,57 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-terminal-black: #000000;
+  --color-terminal-dark: #0a0a0a;
+  --color-terminal-panel: #111111;
+  --color-terminal-border: #222222;
+  --color-terminal-muted: #333333;
+  --color-terminal-dim: #555555;
+  --color-terminal-gray: #888888;
+  --color-terminal-light: #aaaaaa;
+  --color-terminal-text: #cccccc;
+  --color-terminal-bright: #e0e0e0;
+  --color-terminal-white: #ffffff;
+  --color-terminal-green: #00ff41;
+  --color-terminal-green-dim: #00cc33;
+  --color-terminal-red: #ff3333;
+  --color-terminal-amber: #ffb000;
+
+  --font-family-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* ─── Global Resets ─── */
+html, body {
+  background-color: #000000;
+  color: #cccccc;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  scrollbar-color: #333333 #000000;
+}
+
+::selection {
+  background-color: #00ff4133;
+  color: #ffffff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}

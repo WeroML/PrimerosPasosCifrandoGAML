@@ -1,0 +1,263 @@
+<div class="min-h-screen bg-terminal-black text-terminal-text font-mono flex flex-col">
+
+  <!-- HEADER -->
+  <header class="border-b border-terminal-border px-6 py-4">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-terminal-green text-lg">&#9608;&#9608;</span>
+        <div>
+          <h1 class="text-terminal-white text-sm tracking-widest uppercase">PRIMEROS PASOS CIFRANDO</h1>
+          <p class="text-terminal-dim text-xs tracking-wider">Práctica 1 de Ciberseguridad</p>
+        </div>
+      </div>
+      <span class="text-terminal-dim text-xs hidden sm:block">GAML</span>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 px-4 py-8">
+    <div class="max-w-4xl mx-auto space-y-6" [formGroup]="form">
+
+      <!-- ──── SELECCIÓN DE ALGORITMO ──── -->
+      <section class="panel">
+        <div class="panel-header">
+          <span class="tituloSeccion">&gt;</span> Seleccionar algoritmo
+        </div>
+        <div class="panel-body flex flex-wrap gap-4 items-center justify-between">
+          <!-- OPCIONES DE ALGORITMO -->
+          <div class="flex gap-0">
+            <button
+              type="button"
+              (click)="form.controls.algorithm.setValue('caesar')"
+              [class]="form.controls.algorithm.value === 'caesar'
+                ? 'tab-btn tab-active'
+                : 'tab-btn'"
+            >
+              <span class="text-terminal-green mr-1.5">&#9654;</span> Cifrado César
+            </button>
+            <button
+              type="button"
+              (click)="form.controls.algorithm.setValue('atbash')"
+              [class]="form.controls.algorithm.value === 'atbash'
+                ? 'tab-btn tab-active'
+                : 'tab-btn'"
+            >
+              <span class="text-terminal-green mr-1.5">&#9654;</span> Atbash
+            </button>
+          </div>
+
+          <!-- CIFRAR O DESCIFRAR -->
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-terminal-gray uppercase tracking-wider">Acción:</span>
+            <button
+              type="button"
+              (click)="toggleAction()"
+              class="toggle-container"
+            >
+              <span
+                [class]="form.controls.action.value === 'encrypt'
+                  ? 'toggle-option toggle-active'
+                  : 'toggle-option'"
+              >Cifrar</span>
+              <span
+                [class]="form.controls.action.value === 'decrypt'
+                  ? 'toggle-option toggle-active'
+                  : 'toggle-option'"
+              >Descifrar</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN DE DESPLAZAMIENTO SOLO PARA CÉSAR -->
+      @if (form.controls.algorithm.value === 'caesar') {
+        <section class="panel">
+          <div class="panel-header">
+            <span class="tituloSeccion">&gt;</span> Desplazamiento (Key)
+          </div>
+          <div class="panel-body">
+            <div class="flex items-center gap-4">
+              <label class="text-xs text-terminal-gray uppercase tracking-wider whitespace-nowrap">Desplazamiento =</label>
+              <input
+                type="number"
+                formControlName="shift"
+                class="console-input w-24 text-center text-terminal-green"
+                min="0"
+              />
+              <span class="text-xs text-terminal-dim">
+                (módulo {{ displayAlphabet.length }})
+              </span>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- CONFIGURACIÓN DE ALFABETO -->
+      <section class="panel">
+        <div class="panel-header">
+          <span class="tituloSeccion">&gt;</span> Alfabeto
+        </div>
+        <div class="panel-body space-y-4">
+          <!-- CHECKBOX DE ALFABETO PERSONALIZADO -->
+          <label class="flex items-center gap-3 cursor-pointer group">
+            <div class="checkbox-wrapper">
+              <input
+                type="checkbox"
+                formControlName="useCustomAlphabet"
+                class="hidden"
+              />
+              <div
+                [class]="form.controls.useCustomAlphabet.value
+                  ? 'checkbox checked'
+                  : 'checkbox'"
+              >
+                @if (form.controls.useCustomAlphabet.value) {
+                  <span class="text-xs">&#10003;</span>
+                }
+              </div>
+            </div>
+            <span class="text-sm text-terminal-light group-hover:text-terminal-white transition-colors">
+              Usar alfabeto personalizado
+            </span>
+          </label>
+
+          <!-- MOSTRAR ALFABETO SELECCIONADO -->
+          <div class="alphabet-display">
+            <span class="text-xs text-terminal-dim mr-2">Alfabeto activo:</span>
+            <div class="flex flex-wrap gap-1 mt-1">
+              @for (letter of displayAlphabet; track $index) {
+                <span class="inline-block w-6 h-6 text-center text-xs leading-6 border border-terminal-border text-terminal-green bg-terminal-dark">
+                  {{ letter }}
+                </span>
+              }
+            </div>
+            <span class="text-xs text-terminal-dim mt-2 block">
+              Longitud: {{ displayAlphabet.length }}
+            </span>
+          </div>
+
+          <!-- TEXT FIELD DE ALFABETO PERSONALIZADO SI ES EL SELECCIONADO -->
+          @if (form.controls.useCustomAlphabet.value) {
+            <div class="space-y-3">
+              <p class="text-xs text-terminal-dim">
+                <span class="text-terminal-amber">!</span>
+                Escribe un carácter por celda.
+              </p>
+              <div class="flex flex-wrap gap-2" formArrayName="customAlphabet">
+                @for (ctrl of customAlphabetArray.controls; track $index; let i = $index) {
+                  <div class="relative group/letter">
+                    <input
+                      [formControlName]="$index"
+                      maxlength="1"
+                      (input)="onCustomLetterInput(i)"
+                      class="alphabet-input"
+                      [class.text-terminal-green]="ctrl.value.length > 0"
+                      [class.text-terminal-dim]="ctrl.value.length === 0"
+                      [attr.placeholder]="ctrl.value.length === 0 ? '_' : null"
+                    />
+                    @if (customAlphabetArray.length > 1 && ctrl.value.length > 0) {
+                      <button
+                        type="button"
+                        (click)="removeCustomLetter(i)"
+                        class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-terminal-red text-terminal-black text-[10px] leading-4 text-center
+                               opacity-0 group-hover/letter:opacity-100 transition-opacity cursor-pointer"
+                        title="Eliminar"
+                      >&#10005;</button>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- INPUT PARA EL MENSAJE A CIFRAR/DESCIFRAR -->
+      <section class="panel">
+        <div class="panel-header">
+          <span class="tituloSeccion">&gt;</span> Mensaje
+        </div>
+        <div class="panel-body space-y-4">
+          <!-- INPUT -->
+          <div>
+            <label class="block text-xs text-terminal-gray uppercase tracking-wider mb-2">
+              Texto de entrada
+            </label>
+            <textarea
+              formControlName="message"
+              rows="5"
+              class="console-input w-full resize-y"
+              placeholder="Escribe tu mensaje aquí..."
+            ></textarea>
+          </div>
+
+          <!-- DIVISOR -->
+          <div class="flex items-center gap-3">
+            <div class="flex-1 border-t border-terminal-border"></div>
+            <span class="text-xs text-terminal-dim uppercase tracking-widest">
+              {{ form.controls.action.value === 'encrypt' ? '▼ Cifrado' : '▼ Descifrado' }}
+            </span>
+            <div class="flex-1 border-t border-terminal-border"></div>
+          </div>
+
+          <!-- OUTPUT -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs text-terminal-gray uppercase tracking-wider">
+                Resultado
+              </label>
+              <button
+                type="button"
+                (click)="copyResult()"
+                class="copy-btn"
+                [disabled]="!result()"
+              >
+                @if (copied()) {
+                  <span class="text-terminal-green">&#10003; Copiado</span>
+                } @else {
+                  <span>&#9112; Copiar</span>
+                }
+              </button>
+            </div>
+            <div class="console-output min-h-[120px]">
+              @if (result()) {
+                <span class="text-terminal-green">{{ result() }}</span>
+              } @else {
+                <span class="text-terminal-dim italic">El resultado aparecerá aquí...</span>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN DE INFO DE LOS ALGORITMOS -->
+      <section class="panel">
+        <div class="panel-header">
+          <span class="tituloSeccion">&gt;</span> Cómo funcionan los algoritmos
+        </div>
+        <div class="panel-body text-xs text-terminal-dim space-y-2">
+          <p>
+            <span class="text-terminal-amber">César: </span>
+            <span class="text-terminal-gray">C(x) = (x + k) mod N &nbsp;|&nbsp; D(x) = (x − k) mod N</span>
+          </p>
+          <p>
+            <span class="text-terminal-amber">Atbash: </span>
+            <span class="text-terminal-gray">C(x) = (N − 1) − x &nbsp;|&nbsp; Simétrico (cifrar = descifrar)</span>
+          </p>
+          <p>
+            <span class="text-terminal-gray">Donde N = longitud del alfabeto activo.</span>
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="border-t border-terminal-border px-6 py-3">
+    <div class="max-w-4xl mx-auto flex items-center justify-between text-xs text-terminal-dim">
+      <span>Ciberseguridad I — Primeros Pasos Cifrando</span>
+    </div>
+  </footer>
+
+</div>
