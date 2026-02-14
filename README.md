@@ -1,59 +1,35 @@
-# PrimerosPasosCifrandoGAML
+# PRIMEROS PASOS CIFRNDO
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+## Documentación Segura (Auditoría de Integridad)
 
-## Development server
+En cumplimiento con el requisito de **"Documentación Segura"** y evitando el uso de impresiones físicas, este repositorio utiliza Hashes para garantizar la integridad de los archivos fuente. 
 
-To start a local development server, run:
 
-```bash
-ng serve
-```
+| Archivo Fuente             |Algoritmo| Hash                                                       |
+| .--------------------------| .------ | .--------------------------------------------------------- |
+| `src/app/app.ts`           | SHA-224 | `20bb5b944729cde94febb40bcb95fe64d79ad1d6eb8ca303edc28105` |
+| `src/app/app.html`         | SHA-224 | `47374c598279da349dde3455d02fc00e5f9085327268b23f489eaae9` |
+| `src/app/app.css`          | SHA-224 | `aa4c342b6aaa6e68bcf0750734d41f5614d3deccf3a2fc89131efe5c` |
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
+## Desarrollo y Arquitectura
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Características del Sistema
+* **Motor de Cifrado:** Basado en el estándar **ASCII** con soporte para alfabetos personalizados.
+* **Lógica Reactiva:** Uso de `Angular Signals` y `Reactive Forms` para procesamiento en tiempo real.
+* **Módulo Personalizado:** Capacidad de inyectar un conjunto de caracteres (`array` dinámico) para alterar la base del módulo $n$.
 
-```bash
-ng generate component component-name
-```
+### Implementación del Algoritmo
+El sistema no utiliza un abecedario estático. Se basa en el **índice de posición** dentro del conjunto de caracteres provisto por el usuario:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-```bash
-ng generate --help
-```
+### Fórmulas de conversión utilizadas
+César: C = (P + k) mod n
+Atbash: C = (n - 1) - P
 
-## Building
+## Interfaz de Usuario
+Se ha diseñado una interfaz monocromática de estética Hacker utilizando Tailwind CSS.
 
-To build the project run:
+## Acceso al programa
+El sistema está desplegado y operativo en el siguiente enlace seguro (HTTPS):
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
