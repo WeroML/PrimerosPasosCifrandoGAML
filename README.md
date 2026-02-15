@@ -17,19 +17,19 @@ En cumplimiento con el requisito de **"Documentación Segura"** y evitando el us
 ### Características del Sistema
 * **Motor de Cifrado:** Basado en el estándar **ASCII** con soporte para alfabetos personalizados.
 * **Lógica Reactiva:** Uso de `Angular Signals` y `Reactive Forms` para procesamiento en tiempo real.
-* **Módulo Personalizado:** Capacidad de inyectar un conjunto de caracteres (`array` dinámico) para alterar la base del módulo $n$.
+* **Módulo Personalizado:** Capacidad de inyectar un conjunto de caracteres (array dinámico) para alterar la base del módulo $n$.
 
 ### Implementación del Algoritmo
 El sistema no utiliza un abecedario estático. Se basa en el **índice de posición** dentro del conjunto de caracteres provisto por el usuario:
 
 
 ### Fórmulas de conversión utilizadas
-César: C = (P + k) mod n
+César: C = (P + k) % n
 Atbash: C = (n - 1) - P
 
 ## Interfaz de Usuario
 Se ha diseñado una interfaz monocromática de estética Hacker utilizando Tailwind CSS.
 
 ## Acceso al programa
-El sistema está desplegado y operativo en el siguiente enlace seguro (HTTPS):
+El sistema está desplegado y operativo en el siguiente enlace seguro (HTTPS): https://weroml.github.io/PrimerosPasosCifrandoGAML/
 
