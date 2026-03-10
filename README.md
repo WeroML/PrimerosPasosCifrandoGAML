@@ -15,12 +15,43 @@ En cumplimiento con el requisito de **"Documentación Segura"** y evitando el us
 ## Desarrollo y Arquitectura
 
 ### Características del Sistema
-* **Motor de Cifrado:** Basado en el estándar **ASCII** con soporte para alfabetos personalizados.
-* **Lógica Reactiva:** Uso de `Angular Signals` y `Reactive Forms` para procesamiento en tiempo real.
-* **Módulo Personalizado:** Capacidad de inyectar un conjunto de caracteres (array dinámico) para alterar la base del módulo $n$.
+- **Motor de Cifrado:** Basado en el estándar ASCII con soporte para alfabetos personalizados.
+- **Lógica Reactiva:** Uso de `Angular Signals` y `Reactive Forms` para procesamiento en tiempo real.
+- **Módulo Personalizado:** Capacidad de inyectar un conjunto de caracteres (array dinámico) para alterar la base del módulo $n$.
 
 ### Implementación del Algoritmo
-El sistema no utiliza un abecedario estático. Se basa en el **índice de posición** dentro del conjunto de caracteres provisto por el usuario:
+El sistema no utiliza un abecedario estático. Se basa en el índice de posición dentro del conjunto de caracteres provisto por el usuario
+por medio de este ciclo en la función de cifrado / descifrado:
+
+    for (const char of message) {
+      const upper = char.toUpperCase();
+      const idx = alphabet.indexOf(upper);
+
+      if (idx === -1) {
+        // Si el carácter no está en el alfabeto, se deja igual 
+        output += char;
+        continue;
+      }
+
+      let newIdx: number;
+
+      if (algorithm === 'caesar') {
+        // Desplazamiento de caracter para César
+        const s = shift ?? 3;
+        if (action === 'encrypt') {
+          newIdx = ((idx + s) % n + n) % n;
+        } else {
+          newIdx = ((idx - s) % n + n) % n;
+        }
+      } else {
+        // Atbash
+        newIdx = (n - 1) - idx;
+      }
+
+      const newChar = alphabet[newIdx];
+      // Preservar mayúscula/minúscula del carácter original
+      output += char === char.toLowerCase() ? newChar.toLowerCase() : newChar;
+    }
 
 
 ### Fórmulas de conversión utilizadas

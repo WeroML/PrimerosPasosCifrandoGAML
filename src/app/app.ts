@@ -6,6 +6,13 @@ import { CommonModule } from '@angular/common';
 type Algorithm = 'caesar' | 'atbash';
 type Action = 'encrypt' | 'decrypt';
 
+// Resultado de un intento de descifrado por fuerza bruta
+interface BruteForceResult {
+  shift: number;
+  text: string;
+  score: number;
+}
+
 // Alfabeto por defecto (A..Z) como arreglo de caracteres
 const DEFAULT_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
@@ -39,11 +46,18 @@ export class App {
   /* ─── RESULTADO ─── */
   result = signal('');
 
+  /* ─── FUERZA BRUTA ─── */
+  bruteForceResults = signal<BruteForceResult[]>([]);
+  showBruteForce = signal(false);
+
   constructor() {
 
     // Suscribirse a cambios del formulario para recalcular el resultado
     this.form.valueChanges.subscribe(() => {
       this.computeResult();
+      // Limpiar resultados de fuerza bruta al cambiar el mensaje o configuración
+      this.showBruteForce.set(false);
+      this.bruteForceResults.set([]);
     });
   }
 
@@ -154,6 +168,68 @@ export class App {
     this.result.set(output);
   }
 
+  /* ─── Puntuación por frecuencia de letras (heurística) ─── */
+  private scoreText(text: string): number {
+    // Frecuencias aproximadas del español
+    const frequencies: Record<string, number> = {
+      'a': 12.5, 'e': 13.6, 'o': 8.6, 's': 7.9,
+      'i': 6.2, 'n': 6.7, 'r': 6.8, 'l': 4.9
+    };
+    let score = 0;
+    const lower = text.toLowerCase();
+
+    for (const char of lower) {
+      if (frequencies[char]) score += frequencies[char];
+    }
+
+    // Puntos extra para entornos de redes/sistemas
+    if (lower.includes('ssh'))      score += 100;
+    if (lower.includes('servidor')) score += 100;
+
+    return score;
+  }
+
+  /* ─── Descifrado en masa: prueba todos los desplazamientos ─── */
+  runBruteForce(): void {
+    const message = this.form.controls.message.value;
+    const alphabet = this.getActiveAlphabet();
+    const n = alphabet.length;
+
+    if (!message || n === 0) {
+      this.bruteForceResults.set([]);
+      return;
+    }
+
+    const results: BruteForceResult[] = [];
+
+    for (let s = 0; s < n; s++) {
+      let output = '';
+
+      for (const char of message) {
+        const upper = char.toUpperCase();
+        const idx = alphabet.indexOf(upper);
+
+        if (idx === -1) {
+          // Carácter fuera del alfabeto: se conserva tal cual
+          output += char;
+          continue;
+        }
+
+        // Descifrado César: (idx - s + n) % n
+        const newIdx = ((idx - s) % n + n) % n;
+        const newChar = alphabet[newIdx];
+        output += char === char.toLowerCase() ? newChar.toLowerCase() : newChar;
+      }
+
+      results.push({ shift: s, text: output, score: this.scoreText(output) });
+    }
+
+    // Ordenar de mayor a menor puntuación
+    results.sort((a, b) => b.score - a.score);
+    this.bruteForceResults.set(results);
+    this.showBruteForce.set(true);
+  }
+
   /* ─── Copiar al portapapeles─── */
   async copyResult(): Promise<void> {
     try {
@@ -170,6 +246,13 @@ export class App {
       this.copied.set(true);
       setTimeout(() => this.copied.set(false), 2000);
     }
+  }
+
+  /* ─── Aplicar el desplazamiento ganador al formulario principal ─── */
+  applyBruteShift(shift: number): void {
+    this.form.controls.algorithm.setValue('caesar');
+    this.form.controls.action.setValue('decrypt');
+    this.form.controls.shift.setValue(shift);
   }
 
   /* ─── Mostrar alfabeto activo ─── */

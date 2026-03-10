@@ -230,6 +230,66 @@
         </div>
       </section>
 
+      <!-- ──── DESCIFRAR EN MASA (solo César) ──── -->
+      @if (form.controls.algorithm.value === 'caesar') {
+        <section class="panel">
+          <div class="panel-header flex items-center justify-between">
+            <span>
+              <span class="tituloSeccion">&gt;</span> Descifrar en Masa
+              <span class="text-terminal-dim text-[10px] ml-2">César · análisis de frecuencia</span>
+            </span>
+            <button
+              type="button"
+              (click)="runBruteForce()"
+              class="brute-run-btn"
+              [disabled]="!form.controls.message.value"
+            >
+              &#9654; Analizar
+            </button>
+          </div>
+
+          @if (!showBruteForce()) {
+            <div class="panel-body">
+              <p class="text-xs text-terminal-dim">
+                Prueba los <span class="text-terminal-amber">{{ displayAlphabet.length }}</span>
+                desplazamientos posibles y los clasifica por frecuencia de letras para inferir la clave sin que la conozcas.
+              </p>
+            </div>
+          }
+
+          @if (showBruteForce() && bruteForceResults().length > 0) {
+            <div class="panel-body space-y-3">
+              <p class="text-xs text-terminal-dim">
+                <span class="text-terminal-amber">!</span>
+                {{ bruteForceResults().length }} candidatos analizados · mayor puntuación = más probable en español.
+              </p>
+              <div class="brute-list">
+                @for (r of bruteForceResults(); track r.shift; let i = $index) {
+                  <div class="brute-row" [class.brute-row--top]="i === 0">
+                    <div class="brute-row__meta">
+                      <span class="shift-badge">k={{ r.shift }}</span>
+                      <span class="score-badge">{{ r.score | number:'1.0-0' }} pts</span>
+                      @if (i === 0) {
+                        <span class="best-badge">&#9733; MEJOR</span>
+                      }
+                      <button
+                        type="button"
+                        (click)="applyBruteShift(r.shift)"
+                        class="apply-btn"
+                        title="Aplicar este desplazamiento al formulario principal"
+                      >
+                        &#9099; Usar k={{ r.shift }}
+                      </button>
+                    </div>
+                    <div class="brute-row__text">{{ r.text }}</div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </section>
+      }
+
       <!-- SECCIÓN DE INFO DE LOS ALGORITMOS -->
       <section class="panel">
         <div class="panel-header">
