@@ -141,32 +141,18 @@
             <div class="space-y-3">
               <p class="text-xs text-terminal-dim">
                 <span class="text-terminal-amber">!</span>
-                Escribe un carácter por celda.
+                Escribe el alfabeto seguido, sin separadores (ejemplo: ABCDEFGHIJKLMNOPQRSTUVWXYZ).
               </p>
-              <div class="flex flex-wrap gap-2" formArrayName="customAlphabet">
-                @for (ctrl of customAlphabetArray.controls; track $index; let i = $index) {
-                  <div class="relative group/letter">
-                    <input
-                      [formControlName]="$index"
-                      maxlength="1"
-                      (input)="onCustomLetterInput(i)"
-                      class="alphabet-input"
-                      [class.text-terminal-green]="ctrl.value.length > 0"
-                      [class.text-terminal-dim]="ctrl.value.length === 0"
-                      [attr.placeholder]="ctrl.value.length === 0 ? '_' : null"
-                    />
-                    @if (customAlphabetArray.length > 1 && ctrl.value.length > 0) {
-                      <button
-                        type="button"
-                        (click)="removeCustomLetter(i)"
-                        class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-terminal-red text-terminal-black text-[10px] leading-4 text-center
-                               opacity-0 group-hover/letter:opacity-100 transition-opacity cursor-pointer"
-                        title="Eliminar"
-                      >&#10005;</button>
-                    }
-                  </div>
-                }
-              </div>
+              <input
+                type="text"
+                formControlName="customAlphabetInput"
+                class="console-input w-full uppercase"
+                placeholder="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="characters"
+                spellcheck="false"
+              />
             </div>
           }
         </div>
