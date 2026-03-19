@@ -7,9 +7,9 @@ En cumplimiento con el requisito de **"Documentación Segura"** y evitando el us
 
 | Archivo Fuente             |Algoritmo| Hash                                                       |
 | .--------------------------| .------ | .--------------------------------------------------------- |
-| `src/app/app.ts`           | SHA-224 | `20bb5b944729cde94febb40bcb95fe64d79ad1d6eb8ca303edc28105` |
-| `src/app/app.html`         | SHA-224 | `47374c598279da349dde3455d02fc00e5f9085327268b23f489eaae9` |
-| `src/app/app.css`          | SHA-224 | `aa4c342b6aaa6e68bcf0750734d41f5614d3deccf3a2fc89131efe5c` |
+| `src/app/app.ts`           | SHA-224 | `48c17c10a36ac92b90f6805818bbe04116c0c95ff3934ef4b6e41b76` |
+| `src/app/app.html`         | SHA-224 | `a85386f2f52199284156aadeb4edcd80391cc5edba7c2fbff2ba13c8` |
+| `src/app/app.css`          | SHA-224 | `6a8f018e1ef4dcda9b8e516eff0ef902eca7a4c541160e35dd9729d3` |
 
 
 ## Desarrollo y Arquitectura
